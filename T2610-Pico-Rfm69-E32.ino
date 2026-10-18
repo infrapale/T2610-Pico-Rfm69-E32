@@ -21,6 +21,7 @@ https://learn.sparkfun.com/tutorials/rfm69hcw-hookup-guide/all
 
 #include <Arduino.h>
 #include "main.h"
+#include <Wire.h>
 #include "secrets.h"
 #include "atask.h"
 #include "io.h"
@@ -62,9 +63,9 @@ void setup()
     Serial.begin(9600);
     SerialExt.begin(9600);
     SerialTft.begin(9600);
-
     delay(2000);
-
+    Wire.setSDA(PIN_I2C0_SDA);
+    Wire.setSCL(PIN_I2C0_SCL);
     Serial.print(__APP__); Serial.print(F(" Compiled: "));
     Serial.print(__DATE__); Serial.print(" ");
     Serial.print(__TIME__); Serial.println();
