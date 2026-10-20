@@ -55,7 +55,9 @@ void io_rfm69_spi0_initialize(void)
     SPI.setSCK(PIN_RFM_SCK);
     SPI.setCS(PIN_RFM_CS);
     pinMode(PIN_RFM_RESET,OUTPUT);
+    pinMode(PIN_IO_RESET,OUTPUT);
     digitalWrite(PIN_RFM_RESET,LOW);
+    digitalWrite(PIN_IO_RESET,LOW);
     SPI.begin();
 
     SPI.beginTransaction(SPISettings(

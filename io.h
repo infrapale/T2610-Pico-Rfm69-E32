@@ -17,7 +17,7 @@
 #define PIN_GP12        (12u)
 #define PIN_GP13        (13u)
 #define PIN_GP14        (14u)
-#define PIN_GP15        (15u)
+#define PIN_IO_RESET    (15u)
 
 
 #define PIN_RFM_MISO    (16u)

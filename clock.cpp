@@ -27,6 +27,15 @@ void clock_task(void);
 
 clock_st clock_mgr;
 
+basic_time_st   clock_basic = {
+    .year = 2026,
+    .month = 10,
+    .day = 1,
+    .hour = 20,
+    .minute = 30,
+    .second = 0
+};
+
 
 
 // atask_st:            = {"Label          ", ival, next, state, prev, cntr, run, task_ptr };
@@ -85,25 +94,18 @@ void clock_task(void)
 {
     if (millis() > clock_mgr.next_minute)
     {
-        clock_mgr.my_time.tm_min += 1;
-        time_t t = mktime(&clock_mgr.my_time);  // normalize (handles overflow)
-        clock_mgr.my_time = *localtime(&t);     // write back normalized result
-        clock_print_date_time(&clock_mgr.my_time);
-
-        //clock_mgr.next_minute += 60000;
         clock_mgr.next_minute += 6000;
+        clock_basic.minute += 1;
+        if(clock_basic.minute < 59) clock_basic.minute += 1;
+        else {
+            clock_basic.minute = 0;
+            if(clock_basic.hour < 23) clock_basic.hour += 1;
+            else clock_basic.hour = 0;
+        }   
     }
-    if ( clock_mgr.last_hour != clock_mgr.my_time.tm_hour)
-    {
-        clock_mgr.last_hour = clock_mgr.my_time.tm_hour;
-        Serial.printf("Hour: %d", clock_mgr.my_time.tm_hour);
-        msg_send_repo1();
-        //sensor_clear_all();
-        // switch(clock_mgr.my_time.tm_hour)
-        // {
-        //     case 8:
-        //         msg_send_repo1();
-        //         break;
-        // }
-    }
+}
+
+void clock_debug_print(void)
+{
+    Serial.printf("%d-%02d-%02d %02d:%02d\n", clock_basic.year, clock_basic.month, clock_basic.day, clock_basic.hour, clock_basic.minute);
 }

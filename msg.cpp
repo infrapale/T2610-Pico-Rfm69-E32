@@ -12,23 +12,10 @@
 #include "clock.h"
 
 
+extern basic_time_st   clock_basic;
 extern main_ctrl_st main_ctrl;
 // extern sensor_st sensor[SENSOR_NBR_OF];
 // extern sensor_value_st value_array[];
-
-sms_cmd_st sms_cmd[SMS_CMD_NBR_OF] =
-{
-    {"HOME",    SMS_CMD_HOME},
-    {"PUMP",    SMS_CMD_RELAY_PUMP},
-    {"PEER",    SMS_CMD_RELAY_PEER},
-    {"PIHA1",   SMS_CMD_SENSOR_PIHA1},
-    {"REPO1",   SMS_CMD_SENSOR_REPO1},
-    {"REPO2",   SMS_CMD_SENSOR_REPO2},
-};
-
-// void msg_task(void);
-//                                  123456789012345   ival  next  state  prev  cntr flag  call backup
-// atask_st msg_th              =    {"Message Task   ", 5000,    0,     0,  255,    0,  1,  msg_task };
 
 
 msg_st msg = {0};
@@ -259,24 +246,24 @@ void msg_send_repo1(void)
 
 void  msg_time_action(void)
 {
-    // uint8_t errors = 0;
-    // Serial.printf("Time: %s\n", msg.raw);
-    // if((msg.field_count == 8) && (msg.fields[1][0] == '#'))
-    // {
-    //     main_ctrl.timeinfo.tm_year  = (uint16_t)msg_robust_atoi(msg.fields[3],&errors,2000,2100) -1900;    
-    //     main_ctrl.timeinfo.tm_mon   = (uint8_t)msg_robust_atoi(msg.fields[4],&errors,1,12);    
-    //     main_ctrl.timeinfo.tm_mday  = (uint8_t)msg_robust_atoi(msg.fields[5],&errors,1,31);
-    //     main_ctrl.timeinfo.tm_hour  = (uint8_t)msg_robust_atoi(msg.fields[6],&errors,0,24);
-    //     main_ctrl.timeinfo.tm_min   = (uint8_t)msg_robust_atoi(msg.fields[7],&errors,0,60);
-    //     Serial.printf("time errors %d\n",errors);
-    //     if (errors==0) clock_set_date_time();
-    //     else Serial.println("!!!msg_time_action: Integer conversion Error");
-    // }
-    // else {
-    //     Serial.println("Incorrect Time message");
-    // }
+    uint8_t errors = 0;
+    Serial.printf("Time: %s\n", msg.raw);
+    if((msg.field_count == 8) && (msg.fields[1][0] == '#'))
+    {
+        clock_basic.year     = (uint16_t)msg_robust_atoi(msg.fields[3],&errors,2000,2100);    
+        clock_basic.month    = (uint8_t)msg_robust_atoi(msg.fields[4],&errors,1,12);    
+        clock_basic.day      = (uint8_t)msg_robust_atoi(msg.fields[5],&errors,1,31);
+        clock_basic.hour     = (uint8_t)msg_robust_atoi(msg.fields[6],&errors,0,24);
+        clock_basic.minute   = (uint8_t)msg_robust_atoi(msg.fields[7],&errors,0,60);
+        Serial.printf("time errors %d\n",errors);
+        if (errors==0) clock_set_date_time();
+        else Serial.println("!!!msg_time_action: Integer conversion Error");
+    }
+    else {
+        Serial.println("Incorrect Time message");
+    }
 
-    clock_set_date_time();
+    // clock_set_date_time();
 }
 
 void msg_process(msg_from_et from, char *raw_msg )
